@@ -235,15 +235,15 @@ def inventory_check(reg, h, uptie_det=True):
 
 
 def browse(hook_x, step=140, adj=0, dur=0.3):
-    win_moveTo(hook_x, 480, tsize=(1, 1))
-    win_dragTo(hook_x, 480 - step + adj, duration=dur, hook=True, tsize=(1, 1))
+    win_moveTo(hook_x, 480, anchor="center", tsize=(1, 1))
+    win_dragTo(hook_x, 480 - step + adj, anchor="center", duration=dur, hook=True, tsize=(1, 1))
 
 def browse_fast(hook_x, up=False):
     dy = -300 if not up else 300
     x_noise = random.randint(-50, 50)
-    win_moveTo(hook_x + x_noise, 480)
+    win_moveTo(hook_x + x_noise, 480, anchor="center")
     # gui.scroll(dy//100)
-    win_dragTo(hook_x, 480 + dy, duration=0.1)
+    win_dragTo(hook_x, 480 + dy, anchor="center", duration=0.1)
 
 
 def close_panel():
@@ -254,7 +254,7 @@ def close_panel():
     time.sleep(0.1)
     x, y = win_get_position()
     if x > 750 and y < 830:
-        win_moveTo(x, 841)
+        win_moveTo(x, 841, anchor="bottom")
 
 def concat(dict1, dict2):
     for key in dict2:
@@ -339,7 +339,7 @@ def actual_fuse(tier, coords):
     else: return missing
 
 def fuse_selected():
-    wait_while_condition(lambda: not now.button("Confirm.2"), lambda: win_click(1197, 876) if now.button("fuse") else None, timer=1.5)
+    wait_while_condition(lambda: not now.button("Confirm.2"), lambda: win_click(1197, 876, anchor="center") if now.button("fuse") else None, timer=1.5)
     wait_while_condition(lambda: not now.button("Confirm"), lambda: gui.press("space") if now.button("Confirm.2") else None, timer=1.5)
     connection()
     wait_while_condition(
@@ -351,9 +351,9 @@ def fuse_selected():
 def perform_clicks(to_click):
     if p.WISHMAKING and not now_rgb.button("wishmaking"):
         time.sleep(0.1)
-        wait_while_condition(lambda: not now.button("Confirm.0"), lambda: win_click(410, 755), interval=0.2, timer=0.2)
+        wait_while_condition(lambda: not now.button("Confirm.0"), lambda: win_click(410, 755, anchor="center"), interval=0.2, timer=0.2)
         wait_while_condition(lambda: now_click.button("Confirm.0"))
-        win_moveTo(1194, 841)
+        win_moveTo(1194, 841, anchor="bottom")
         time.sleep(0.2)
 
     hook_x = random.choice([1083, 1228, 1370, 1515])
@@ -390,8 +390,8 @@ def set_affinity(i, teams=None):
     if teams is None: teams = p.GIFTS
     if p.IDX == i: return
     p.IDX = i
-    ClickAction((469, 602), ver="keywordSel").execute(shop_click)
-    win_moveTo(605, 612)
+    ClickAction((469, 602), ver="keywordSel", anchor="center").execute(shop_click)
+    win_moveTo(605, 612, anchor="center")
     confirm_affinity(teams=teams)
     time.sleep(0.2)
 
@@ -603,21 +603,21 @@ def confirm_affinity(teams=None):
     is_not_seleted = True
     while is_not_seleted:
         click_rgb.button(teams[p.IDX]["checks"][3], "affinity!")
-        win_click(1194, 841, tsize=(100, 30))
+        win_click(1194, 841, anchor="bottom", tsize=(100, 30))
         time.sleep(0.1)
         if not now.button("notSelected"):
             is_not_seleted = False
         else:
-            ClickAction((469, 602), ver="keywordSel").execute(shop_click)
+            ClickAction((469, 602), ver="keywordSel", anchor="center").execute(shop_click)
             # win_moveTo(605, 612)
 
 def init_fuse():
     chain_actions(shop_click, [
-        Action(p.SUPER, click=(410, 580), ver="fuse"),
+        Action(p.SUPER, click=(410, 580), ver="fuse", anchor="center"),
         lambda: time.sleep(0.1),
-        ClickAction((469, 602), ver="keywordSel")
+        ClickAction((469, 602), ver="keywordSel", anchor="center")
     ])
-    win_moveTo(605, 612)
+    win_moveTo(605, 612, anchor="center")
     confirm_affinity()
 
 def fuse_loop():
@@ -698,7 +698,7 @@ def sell(gifts):
         money = update_money
 
         if money < sum(gifts.values()):
-            Action(p.SUPER, click=(600, 585), ver="sell").execute(click)
+            Action(p.SUPER, click=(600, 585), ver="sell", anchor="center").execute(click)
             time.sleep(0.2)
             found_flag = False
             if search_sell((920, 295, 790, 345)):
@@ -747,7 +747,7 @@ def enhance(gifts, floor1=False):
         gift_list = check_ehance_cost(gifts)
         if not gift_list: return
 
-        ClickAction((250, 581), ver="power").execute(click)
+        ClickAction((250, 581), ver="power", anchor="center").execute(click)
     else:
         gift_list = [k for k in gifts.keys()]
 
@@ -998,13 +998,13 @@ def buy_skill3():
         return
 
     ClickAction((coord[0], coord[1] - 120), ver="replace").execute(click)
-    win_click(1442, 497)
-    win_click(1187, 798)
-    if not wait_while_condition(lambda: not loc.button("connecting", wait=0.5), lambda: win_click(1187, 798), timer=1):
-        win_click(953, 497)
-        win_click(1187, 798)
-        if not wait_while_condition(lambda: not loc.button("connecting", wait=0.5), lambda: win_click(1187, 798), timer=2):
-            win_click(772, 800)
+    win_click(1442, 497, anchor="center")
+    win_click(1187, 798, anchor="center")
+    if not wait_while_condition(lambda: not loc.button("connecting", wait=0.5), lambda: win_click(1187, 798, anchor="center"), timer=1):
+        win_click(953, 497, anchor="center")
+        win_click(1187, 798, anchor="center")
+        if not wait_while_condition(lambda: not loc.button("connecting", wait=0.5), lambda: win_click(1187, 798, anchor="center"), timer=2):
+            win_click(772, 800, anchor="center")
             return
     connection()
 
@@ -1013,15 +1013,15 @@ def revive_idiots():
     revivals = min(p.DEAD, balance()//100)
     if revivals < 1: return
 
-    ClickAction((293, 705), ver="return").execute(click)
+    ClickAction((293, 705), ver="return", anchor="center").execute(click)
     for _ in range(revivals):
-        if not wait_while_condition(lambda: now.button("return"), lambda: win_click(1545, 690), timer=3):
+        if not wait_while_condition(lambda: now.button("return"), lambda: win_click(1545, 690, anchor="center"), timer=3):
             Action("return", ver=p.SUPER).execute(click)
             return
         Action("no_hp", ver="select").execute(click_rgb) # 1700 970
         Action("select", ver="connecting").execute(click)
         connection()
-        ClickAction((1545, 500), ver="return").execute(click)
+        ClickAction((1545, 500), ver="return", anchor="center").execute(click)
         time.sleep(0.2)
     Action("return", ver=p.SUPER).execute(click)
     time.sleep(0.2)
@@ -1029,19 +1029,19 @@ def revive_idiots():
 def heal_all():
     if balance() < 100: return
 
-    ClickAction((293, 705), ver="return").execute(click)
+    ClickAction((293, 705), ver="return", anchor="center").execute(click)
     try:
-        ClickAction((1545, 500), ver="connecting").execute(click)
+        ClickAction((1545, 500), ver="connecting", anchor="center").execute(click)
         connection()
         time.sleep(0.2)
     finally:
-        ClickAction((1545, 500), ver="return").execute(click)
+        ClickAction((1545, 500), ver="return", anchor="center").execute(click)
         Action("return", ver=p.SUPER).execute(click)
         time.sleep(0.2)
 
 ### General
 def leave():
-    ClickAction((1705, 967), ver="ConfirmInvert").execute(click)
+    ClickAction((1705, 967), ver="ConfirmInvert", anchor="bottom").execute(click)
     wait_while_condition(lambda: loc.button("ConfirmInvert", wait=0.5), lambda: gui.press("space"), interval=1, timer=5)
     wait_while_condition(lambda: now.button(p.SUPER), timer=5)
 
@@ -1079,7 +1079,7 @@ def shop():
             buy_skill3()
 
     if p.LVL == 1:
-        ClickAction((250, 581), ver="power").execute(click)
+        ClickAction((250, 581), ver="power", anchor="center").execute(click)
         if not loc_shop.button("+", "fuse_shelf", conf=0.95):
             # we really are on the first floor
             try:

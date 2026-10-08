@@ -36,16 +36,16 @@ def select_grace():
         if p.BUFF[i]:
             x = int(335 + 297*(i % 5))
             y = int(375 + 357*(i // 5))
-            ClickAction((x, y), ver="money!").execute(try_click)
+            ClickAction((x, y), ver="money!", anchor="center").execute(try_click)
             if p.BUFF[i] > 1:
-                ClickAction((x + 60*(1 - 2*(p.BUFF[i] < 3)), y + 155), ver="money!").execute(try_click)
+                ClickAction((x + 60*(1 - 2*(p.BUFF[i] < 3)), y + 155), ver="money!", anchor="center").execute(try_click)
 
 def dungeon_start():
     ACTIONS = [
         Action("Drive"),
         Action("MD", ver="Start"),
         lambda: time.sleep(1.4),
-        lambda: win_click(1588, 567) if p.EXTREME and now_rgb.button("infinite_off") else None,
+        lambda: win_click(1588, 567, anchor="center") if p.EXTREME and now_rgb.button("infinite_off") else None,
         Action("Start"),
         Action("enterInvert", ver="ConfirmTeam"),
         select_team,
@@ -68,11 +68,11 @@ def dungeon_start():
     if p.HOS_MODE is False:
         ACTIONS.extend([
             lambda: now_click.button("giftSearchOn"),
-            ClickAction(p.GIFTS[0]["checks"][2], ver="gifts!"),
-            lambda: ClickAction((1239, 395), ver="selected!").execute(try_click) if (p.BUFF[3] or p.GIFTS[0]['checks'][5] == 0) else None,
-            lambda: ClickAction((1239, 549), ver="selected!").execute(try_click) if (p.BUFF[3] or p.GIFTS[0]['checks'][5] == 1) else None,
-            lambda: ClickAction((1239, 703), ver="selected!").execute(try_click) if p.BUFF[9] else None,
-            ClickAction((1624, 882)),#
+            ClickAction(p.GIFTS[0]["checks"][2], ver="gifts!", anchor="center"),
+            lambda: ClickAction((1239, 395), ver="selected!", anchor="center").execute(try_click) if (p.BUFF[3] or p.GIFTS[0]['checks'][5] == 0) else None,
+            lambda: ClickAction((1239, 549), ver="selected!", anchor="center").execute(try_click) if (p.BUFF[3] or p.GIFTS[0]['checks'][5] == 1) else None,
+            lambda: ClickAction((1239, 703), ver="selected!", anchor="center").execute(try_click) if p.BUFF[9] else None,
+            ClickAction((1624, 882), anchor="bottom"),#
 
             lambda: wait_while_condition(lambda: not now.button("loading"), lambda: gui.press("space") if now.button("Confirm") else None, timer=5),
             loading_halt
@@ -80,17 +80,17 @@ def dungeon_start():
     else:
         ACTIONS.extend([
             lambda: now_click.button("giftSearch"),
-            ClickAction(p.GIFTS[0]["checks"][2], ver="gifts!"),
-            lambda: ClickAction((1239, 395), ver="selected!").execute(try_click) if (p.BUFF[3] or p.GIFTS[0]['checks'][5] == 0) else None,
-            lambda: ClickAction((1239, 549), ver="selected!").execute(try_click) if (p.BUFF[3] or p.GIFTS[0]['checks'][5] == 1) else None,
-            lambda: ClickAction((1239, 703), ver="selected!").execute(try_click) if p.BUFF[9] else None,
-            ClickAction((1624, 882)),
+            ClickAction(p.GIFTS[0]["checks"][2], ver="gifts!", anchor="center"),
+            lambda: ClickAction((1239, 395), ver="selected!", anchor="center").execute(try_click) if (p.BUFF[3] or p.GIFTS[0]['checks'][5] == 0) else None,
+            lambda: ClickAction((1239, 549), ver="selected!", anchor="center").execute(try_click) if (p.BUFF[3] or p.GIFTS[0]['checks'][5] == 1) else None,
+            lambda: ClickAction((1239, 703), ver="selected!", anchor="center").execute(try_click) if p.BUFF[9] else None,
+            ClickAction((1624, 882), anchor="bottom"),
 
             lambda: wait_while_condition(lambda: not now.button("loading"), lambda: gui.press("space") if now.button("Confirm") else None, timer=5),
 
             lambda: ClickAction((985, 286)).execute(try_click),
             lambda: time.sleep(1),
-            lambda: ClickAction((1060, 816)).execute(try_click),
+            lambda: ClickAction((1060, 816), anchor="center").execute(try_click),
             lambda: time.sleep(1),
             lambda: gui.press("enter"),
             lambda: time.sleep(1),
@@ -116,7 +116,7 @@ def dungeon_start():
                 chain_actions(try_click, ACTIONS[i:])
             except RuntimeError:
                 failed += 1
-                win_moveTo(1509, 978)
+                win_moveTo(1509, 978, anchor="bottom")
         except gui.PauseException as e:
             pause(e.window)
         if failed > 5:
@@ -159,7 +159,7 @@ def handle_bonus():
         raise RuntimeError
 
 TERMIN = [
-    Action("victory", click=(1693, 841)),
+    Action("victory", click=(1693, 841), anchor="bottom"),
     lambda: win_moveTo(1710, 982),
     Action("Claim", ver="ClaimInvert"),
     handle_bonus,
@@ -194,7 +194,7 @@ def dungeon_end():
                 chain_actions(try_click, TERMIN[i:])
             except RuntimeError:
                 failed += 1
-                win_moveTo(1710, 982)
+                win_moveTo(1710, 982, anchor="bottom")
         except gui.PauseException as e:
             pause(e.window)
         if now.button("out_of_fuel"):
@@ -210,7 +210,7 @@ def dungeon_end():
 
 # FAIL RUN
 FAIL = [
-    Action("defeat", click=(1693, 841)),
+    Action("defeat", click=(1693, 841), anchor="bottom"),
     lambda: win_moveTo(1710, 982),
     Action("Claim"),
     Action("GiveUp"),
@@ -243,7 +243,7 @@ def dungeon_fail():
                 chain_actions(try_click, FAIL[i:])
             except RuntimeError:
                 failed += 1
-                win_moveTo(1710, 982)
+                win_moveTo(1710, 982, anchor="bottom")
         except gui.PauseException as e:
             pause(e.window)
         if failed > 5:
@@ -265,7 +265,7 @@ def main_loop():
         if now.button("ServerError"):
             for _ in range(3):
                 time.sleep(6)
-                win_click(1100, 700)
+                win_click(1100, 700, anchor="center")
                 time.sleep(1)
                 if not now.button("ServerError"): break
 
@@ -274,17 +274,17 @@ def main_loop():
                 logging.error('Server error happened')
 
         if now.button("EventEffect"):
-            win_click(773, 521)
+            win_click(773, 521, anchor="center")
             time.sleep(0.2)
-            win_click(967, 774)
+            win_click(967, 774, anchor="center")
 
         if p.LIMBUS_NAME not in (win := gui.getActiveWindowTitle()): pause(win)
 
         if p.HARD and now.button("suicide"):
             if not p.EXTREME:
-                win_click(815, 700)
+                win_click(815, 700, anchor="center")
             else:
-                win_click(1117, 700)
+                win_click(1117, 700, anchor="center")
             connection()
 
         if now.button("victory"):

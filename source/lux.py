@@ -14,8 +14,8 @@ def is_full(shift):
 def check_enkephalin(shift=0): # 227
     if not is_full(shift=shift): return
 
-    ClickAction((601 - shift, 1004), ver="ConfirmInvert.1").execute(click)
-    win_click(1208, 496)
+    ClickAction((601 - shift, 1004), ver="ConfirmInvert.1", anchor="bottom").execute(click)
+    win_click(1208, 496, anchor="center")
     Action("ConfirmInvert.1", ver="connecting").execute(click)
     connection()
     time.sleep(0.5)
@@ -40,7 +40,7 @@ def select_thd_level():
             # We can't scroll further down
             break
         
-        win_moveTo(950, 540)
+        win_moveTo(950, 540, anchor="center")
         win_dragTo(950, 220)
         choices = LocateRGB.locate_all(PTH["EnterSmall"], region=REG["thd!"])
         if not choices:
@@ -112,9 +112,9 @@ def grind_lux(count_exp, count_thd, teams):
             if now.button("Exp") and not now.button("EnterSmall", "thd!"):
                 if p.NETZACH: check_enkephalin(shift=227)
 
-                win_click(225, 492)
+                win_click(225, 492, anchor="center")
                 time.sleep(1)
-                win_click(553, 721)
+                win_click(553, 721, anchor="center")
 
                 wait_while_condition(lambda: not now.button("EnterSmall", "thd!"))
                 time.sleep(0.5)

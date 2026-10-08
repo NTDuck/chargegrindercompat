@@ -86,9 +86,9 @@ def ego_click(best_ego):
                 win_click(c0, int(c1 + 200))
                 break
         else:
-            win_click(1850, 1000)
+            win_click(1850, 1000, anchor="bottom")
     if not loc.button("winrate", wait=2):
-        win_click(1888, 901)
+        win_click(1888, 901, anchor="bottom")
     time.sleep(0.2)
 
 
@@ -104,30 +104,30 @@ def select_ego():
 
     # try using zayin
     for x in coords_x:
-        win_moveTo(x, 990)
+        win_moveTo(x, 990, anchor="bottom")
         ego_click(best1)
     check_selection()
     coords_x = get_lowskill()
     if len(coords_x) < 3:
         # zayin kinda worked
-        for x in coords_x: win_click(x, 990)
+        for x in coords_x: win_click(x, 990, anchor="bottom")
         return
 
     for x in coords_x: # zayin didn't work, so let's use something more deadly
-        win_click(x, 990, clicks=2)
+        win_click(x, 990, clicks=2, anchor="bottom")
         time.sleep(0.1)
         ego_click(best2)
     check_selection()
     coords_x = get_lowskill()
     if len(coords_x) < 3:
         # we winrate with this
-        for x in coords_x: win_click(x, 990)
+        for x in coords_x: win_click(x, 990, anchor="bottom")
         return
 
     # even that didn't work, so let's go for damage
     check_selection("damage_on", st_clicks=1)
     coords_x = get_lowskill()
-    for x in coords_x: win_click(x, 990)
+    for x in coords_x: win_click(x, 990, anchor="bottom")
 
 
 def is_ego():
@@ -282,7 +282,7 @@ def select(sinners):
         return False
     
     if len(selected) > correct or len(backup) > correct_back:
-        ClickAction((1713, 712), ver="Confirm_alt").execute(click)
+        ClickAction((1713, 712), ver="Confirm_alt", anchor="center").execute(click)
         time.sleep(0.21)
         click.button("Confirm_alt")
         time.sleep(0.5)
@@ -296,7 +296,7 @@ def select(sinners):
 
     input_with_fallback(
         "space",
-        lambda: win_click(1728, 884, tsize=(200,  50)),
+        lambda: win_click(1728, 884, anchor="bottom", tsize=(200,  50)),
         lambda: loc.button("loading", wait=5)
     )
     loading_halt()
@@ -368,7 +368,7 @@ def fight(lux=False):
     print("battle check")
     if is_tobattle:
         if lux:
-            win_moveTo(880, 880)
+            win_moveTo(880, 880, anchor="bottom")
             select_team()
         else:
             x, y = win_get_position()
@@ -442,7 +442,7 @@ def fight(lux=False):
                 time.sleep(0.5)
 
                 if is_focused and not loc.button("winrate_on", "winrate", wait=2, method=cv2.TM_SQDIFF_NORMED):
-                    win_click(1385, 930)
+                    win_click(1385, 930, anchor="bottom")
 
                 # cv2.imwrite(f"data/battle_struggle/{time.time()}.png", screenshot(region=(0, 820, 1920, 100)))
 
@@ -471,7 +471,7 @@ def fight(lux=False):
             if attempts >= 3:
                 logging.info("Got stuck in hard battle")
                 if not p.RESTART:
-                    wait_while_condition(lambda: not now.button("Confirm_retry", method=cv2.TM_SQDIFF_NORMED), lambda: win_click(1200, 400), interval=1, timer=3)
+                    wait_while_condition(lambda: not now.button("Confirm_retry", method=cv2.TM_SQDIFF_NORMED), lambda: win_click(1200, 400, anchor="center"), interval=1, timer=3)
                     gui.press("space")
                     loading_halt()
                     logging.info("Run Aborted: Hard battle could not continue.")
@@ -479,14 +479,14 @@ def fight(lux=False):
                     if p.ALTF4: close_limbus(error=err)
                     raise err
                 else:
-                    wait_while_condition(lambda: not now.button("Confirm_retry", method=cv2.TM_SQDIFF_NORMED), lambda: win_click(1200, 670), interval=1, timer=3)
+                    wait_while_condition(lambda: not now.button("Confirm_retry", method=cv2.TM_SQDIFF_NORMED), lambda: win_click(1200, 670, anchor="center"), interval=1, timer=3)
                     gui.press("space")
                     loading_halt()
                     print("Battle is over")
                     logging.info("Battle is over")
                     return True
             else:
-                wait_while_condition(lambda: not now.button("Confirm_retry", method=cv2.TM_SQDIFF_NORMED), lambda: win_click(1200, 530), interval=1, timer=3)
+                wait_while_condition(lambda: not now.button("Confirm_retry", method=cv2.TM_SQDIFF_NORMED), lambda: win_click(1200, 530, anchor="center"), interval=1, timer=3)
                 gui.press("space")
                 loading_halt()
                 logging.info(f"Re-attempting the battle (attempt {attempts + 1})")

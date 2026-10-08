@@ -64,34 +64,35 @@ def win_get_position():
     inv_comp = 1920 / p.WINDOW[2]
     return int((x - p.WINDOW[0])*inv_comp), int((y - p.WINDOW[1])*inv_comp)
 
-def win_click(*args, **kwargs):
+def win_click(*args, anchor="top", **kwargs):
     if len(args) == 0: x, y = None, None
     elif len(args) == 1: x, y = args[0]
     else: x, y = args
     comp = p.WINDOW[2] / 1920
     if x is not None and y is not None:
-        x, y = int(p.WINDOW[0] + x*comp), int(p.WINDOW[1] + y*comp)
+        x = int(p.WINDOW[0] + x*comp)
+        y = int(p.WINDOW[1] + p.canvas_y(y, anchor)*comp)
 
     if "tsize" in kwargs:
         kwargs["tsize"] = tuple(int(size * comp) for size in kwargs["tsize"])
-    
+
     gui.click(x, y, **kwargs)
 
-def win_moveTo(*args, **kwargs):
+def win_moveTo(*args, anchor="top", **kwargs):
     if len(args) == 1: x, y = args[0]
     else: x, y = args
     comp = p.WINDOW[2] / 1920
-    x, y = int(p.WINDOW[0] + x*comp), int(p.WINDOW[1] + y*comp)
+    x, y = int(p.WINDOW[0] + x*comp), int(p.WINDOW[1] + p.canvas_y(y, anchor)*comp)
 
     if "tsize" in kwargs:
         kwargs["tsize"] = tuple(int(size * comp) for size in kwargs["tsize"])
     gui.moveTo(x, y, **kwargs)
 
-def win_dragTo(*args, **kwargs):
+def win_dragTo(*args, anchor="top", **kwargs):
     if len(args) == 1: x, y = args[0]
     else: x, y = args
     comp = p.WINDOW[2] / 1920
-    x, y = int(p.WINDOW[0] + x*comp), int(p.WINDOW[1] + y*comp)
+    x, y = int(p.WINDOW[0] + x*comp), int(p.WINDOW[1] + p.canvas_y(y, anchor)*comp)
 
     if "tsize" in kwargs:
         kwargs["tsize"] = tuple(int(size * comp) for size in kwargs["tsize"])
@@ -243,7 +244,7 @@ class Locate(): # if inputing np.ndarray, convert to BGR first!
         return cv2.warpPerspective(image, M_combined, (w + 1, h))
 
     @staticmethod
-    def _load_template(template, comp=1, v_comp=None, h_comp=None, distort=None):
+    def _load_template(template, comp=1, v_comp=None, h_comp=None, distort=None, **_ignore):
         if isinstance(template, str):
             Locate.tsize["name"] = template
             template = cv2.imread(template)
@@ -369,12 +370,13 @@ class Locate(): # if inputing np.ndarray, convert to BGR first!
                     tsize = (5, 5)
                     if isinstance(click, tuple) and len(click) == 2:
                         res = click
+                        anchor = kwargs.get("anchor", "top")
                     else:
                         res = gui.center(res)
                         if Locate.tsize["name"] == template:
                             tsize = Locate.tsize["size"]            
-                    
-                    win_moveTo(res, tsize=tsize)
+            
+                    win_moveTo(res, tsize=tsize, anchor=anchor)
                     gui.click()
                     # if isinstance(template, str):
                     #     print(f"clicked {os.path.splitext(os.path.basename(template))[0]}")
@@ -636,7 +638,7 @@ class LocatePreset:
         result = self.cl.try_locate(path, **params)
         return gui.center(result)
     
-    def button(self, *args, ver=False, **overrides):
+    def button(self, *args, ver=False, anchor="top", **overrides):
         if   len(args) == 1: key, region_key = args[0], args[0]
         elif len(args) == 2: key, region_key = args
         elif len(args) != 0: raise ValueError("Invalid arguments")
@@ -648,10 +650,11 @@ class LocatePreset:
             params = self.params.copy()
             params.update(overrides)
             params["region"] = region
+            params["anchor"] = anchor
             action = lambda: self.cl.check(path, **params)
         else:
             x, y = overrides["click"] # assuming that click is specified correctly
-            action = lambda: (win_click(x, y), True)[1]
+            action = lambda: (win_click(x, y, anchor=anchor), True)[1]
         
         if isinstance(ver, str) and "!" in ver:
             ver = REG[ver]
@@ -679,7 +682,7 @@ class LocatePreset:
                     print(f"Verifier failed (attempt {i}), reclicking...")
                     # Reclick the original target
                     if len(args) == 0:
-                        win_click(x, y)
+                        win_click(x, y, anchor=anchor)
                         result = True
                     else:
                         result = self.cl.check(path, **params)
@@ -739,11 +742,12 @@ class BaseAction:
 
 
 class Action(BaseAction):
-    def __init__(self, key, region=None, click=None, ver=None):
+    def __init__(self, key, region=None, click=None, ver=None, anchor="top"):
         self.key = key
         self.region = region
         self.click = click
         self.ver = ver
+        self.anchor = anchor
 
     def should_execute(self, _=None):
         return True  # Always executed
@@ -753,19 +757,21 @@ class Action(BaseAction):
         kwargs = {}
         if self.click is not None:
             kwargs["click"] = self.click
+            kwargs["anchor"] = self.anchor
         return preset.button(*args, ver=self.ver or ver, **kwargs)
 
 
 class ClickAction(BaseAction):
-    def __init__(self, click: tuple, ver: tuple | str = None):
+    def __init__(self, click: tuple, ver: tuple | str = None, anchor="top"):
         self.click = click
         self.ver = ver
+        self.anchor = anchor
 
     def should_execute(self, _=None):
         return True
 
     def execute(self, preset: LocatePreset, ver=None):
-        return preset.button(click=self.click, ver=self.ver or ver)
+        return preset.button(click=self.click, ver=self.ver or ver, anchor=self.anchor)
     
 
 def chain_actions(preset: LocatePreset, actions: list):
@@ -788,7 +794,7 @@ def chain_actions(preset: LocatePreset, actions: list):
 def handle_fuckup():
     if p.LIMBUS_NAME in gui.getActiveWindowTitle():
         gui.set_window()
-        win_click(1888, 901)
+        win_click(1888, 901, anchor="bottom")
         gui.press("esc")
         gui.press("esc")
         if loc.button("forfeit", wait=1):

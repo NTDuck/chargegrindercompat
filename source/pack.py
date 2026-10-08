@@ -189,7 +189,8 @@ def pack():
         id = pack_eval(p.LVL, regions, skip, skips)
         if not id is None:
             region = regions[id]
-            x, y = (region[0] + (region[2] // 2), region[1] + (region[3] // 2))
+            x, y = (region[0] + (region[2] // 2), region[1] + (region[3] // 2))  # pack region is 1080-ref
+            x, y = int(x), int(p.canvas_y(y, anchor="center"))
             x += random.randint(-40, 40)
             y += random.randint(-175, 175)
             win_moveTo(x, y)

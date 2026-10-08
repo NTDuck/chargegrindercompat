@@ -180,7 +180,7 @@ def enter(wait=1.2):
             condition= lambda: now.button(button),
             action=lambda: click.button(button)
         )
-        win_moveTo(1721, 999)
+        win_moveTo(1721, 999, anchor="bottom")
         connection()
         return True
     return False
@@ -256,7 +256,7 @@ def move():
         name = get_node_name(_loc, region)
         key_name = keys_map.get(region_idx, "d")
 
-        if input_with_fallback(key_name, lambda: win_click(gui.center(region)), enter):
+        if input_with_fallback(key_name, lambda: win_click(gui.center(region), anchor="center"), enter):
             logging.info(f"Entering {name} {'fight'*(name!='Event' and name!='Shop')}")
             return True
         return False
@@ -316,7 +316,7 @@ def move():
         if not id is None:
             key_name = keys_map.get(int(id-adjust), "d")
             region = regions[id]
-            if input_with_fallback(key_name, lambda: win_click(gui.center(region)), enter):
+            if input_with_fallback(key_name, lambda: win_click(gui.center(region), anchor="center"), enter):
                 logging.info(f"Entering {name} {'fight'*(name!='Event')}")
                 return True
     elif move_fallback():

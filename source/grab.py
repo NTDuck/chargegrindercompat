@@ -133,7 +133,7 @@ def get_trial(image, trials_image):
     print(res)
     if len(res) == 1:
         point = gui.center(res[0])
-        win_click(point[0], 600, tsize=(150, 170))
+        win_click(point[0], 600, anchor="center", tsize=(150, 170))
         return rectangle(image, (int(point[0]-140), 0), (int(point[0]+140), 110), (0, 0, 0), -1), \
                rectangle(trials_image, (int(point[0]-140), 0), (int(point[0]+140), 52), (0, 0, 0), -1)
     elif len(res) > 1:
@@ -207,7 +207,7 @@ def grab_card():
     '''
     if not now.button("encounterreward"): return False
 
-    win_moveTo(1000, 900)
+    win_moveTo(1000, 900, anchor="bottom")
     now_click.button("Cancel") # if was misclicked
     time.sleep(1.4)
     # cv2.imwrite(f"data/cards/{time.time()}.png", screenshot(region=REG["Card"]))
@@ -216,7 +216,7 @@ def grab_card():
             get_card(f"card{i}")
             wait_while_condition(
                 condition=lambda: now.button("encounterreward"), 
-                action=lambda: win_click(1255, 924) if now.button("Confirm") else None,
+                action=lambda: win_click(1255, 924, anchor="center") if now.button("Confirm") else None,
                 interval=0.1
             )
             return True
@@ -241,6 +241,6 @@ def get_adversity():
     for x in x_coords:
         ClickAction((x + 90, 550), ver="selectCount!").execute(click)
     time.sleep(0.3)
-    win_click(1725, 1000)
+    win_click(1725, 1000, anchor="bottom")
     wait_while_condition(lambda: now.button("adversity"), interval=0.2)
     return True

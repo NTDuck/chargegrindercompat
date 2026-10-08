@@ -54,11 +54,11 @@ def event():
                     win_click(gui.center(filtered[0]), delay=0)
                     if is_choice_made(): continue
                 else:
-                    win_click(1356, 498, delay=0)
+                    win_click(1356, 498, anchor="center", delay=0)
                     if is_choice_made(): continue
             
             for choice in [316, 520, 730]:
-                win_click(1348, choice, delay=0)
+                win_click(1348, choice, anchor="center", delay=0)
                 if is_choice_made(): break
             else:
                 if not is_choice_made():

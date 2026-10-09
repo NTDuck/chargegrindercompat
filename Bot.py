@@ -120,7 +120,10 @@ def dungeon_start():
                 win_moveTo(1509, 978, anchor="bottom")
         except gui.PauseException as e:
             pause(e.window)
-        if failed > 5:
+        if failed > 10:
+            # 10 headroom: observed runs self-heal by iteration 5 (21:48:06),
+            # but variance across restarts regularly burns 6+ chains.
+            # Beyond 10 something is structurally wrong; dumps will show it.
             print("Initialization error")
             logging.error("Initialization error")
             break

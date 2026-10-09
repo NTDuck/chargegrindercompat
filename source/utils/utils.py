@@ -815,7 +815,12 @@ def chain_actions(preset: LocatePreset, actions: list):
             elif isinstance(next_action, ClickAction):
                 ver = next_action.ver  # Could still be set explicitly
 
-        curr.execute(preset, ver=ver)
+        try:
+            curr.execute(preset, ver=ver)
+        except RuntimeError as e:
+            desc = getattr(curr, "key", None) or f"click{getattr(curr, 'click', '')}"
+            logging.error(f"chain action[{i}] {desc} (ver={ver!r}) failed: {e}")
+            raise
 
 def handle_fuckup():
     if p.LIMBUS_NAME in gui.getActiveWindowTitle():

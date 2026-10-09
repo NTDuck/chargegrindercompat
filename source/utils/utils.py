@@ -51,6 +51,26 @@ def screenshot(region=(0, 0, 1920, 1080)): # works only for cv2!
         round(h*comp)
     )))
 
+def _dump_verify_failure(tag, ver=None, state0=None):
+    """Diagnostics only: when a verified click exhausts its retries, dump the
+    pre-click reference (region-based verifiers) and the current full screen
+    to /tmp/cg_dumps so the failing chain step can be pinned offline.
+    Never raises."""
+    try:
+        d = "/tmp/cg_dumps"
+        os.makedirs(d, exist_ok=True)
+        ts = time.strftime("%H%M%S")
+        if state0 is not None:
+            cv2.imwrite(os.path.join(d, f"{ts}_{tag}_state0.png"), state0)
+        cv2.imwrite(os.path.join(d, f"{ts}_{tag}_now.png"), screenshot())
+        if isinstance(ver, str) and "!" not in ver and ver in REG:
+            cv2.imwrite(os.path.join(d, f"{ts}_{tag}_ver_{ver.replace('.', '_')}.png"), screenshot(region=REG[ver]))
+        msg = f"VERIFY FAIL tag={tag} ver={ver!r} dumps={d}"
+        logging.error(msg)
+        print(msg)
+    except Exception:
+        pass
+
 def rectangle(image, point1, point2, color, type):
     comp = p.WINDOW[2] / 1920
     x1, y1 = point1
@@ -693,10 +713,12 @@ class LocatePreset:
 
                     if not result:
                         # Button disappeared + verifier false — unrecoverable
+                        _dump_verify_failure("click_retry", ver=ver, state0=state0 if isinstance(ver, tuple) else None)
                         raise RuntimeError(f"Click retry failed")
                 else:
                     break  # verifier passed
             else:
+                _dump_verify_failure("verif_failed", ver=ver, state0=state0 if isinstance(ver, tuple) else None)
                 raise RuntimeError(f"Verification failed after 3 retries.")
         return result
 

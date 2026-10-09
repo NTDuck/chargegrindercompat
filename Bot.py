@@ -116,6 +116,7 @@ def dungeon_start():
                 chain_actions(try_click, ACTIONS[i:])
             except RuntimeError:
                 failed += 1
+                logging.error(f"MD init iteration {failed} failed: resumed at index {i} (screen key={key!r})")
                 win_moveTo(1509, 978, anchor="bottom")
         except gui.PauseException as e:
             pause(e.window)

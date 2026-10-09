@@ -216,20 +216,18 @@ def select_team():
         return
 
     win_moveTo(196, 480)
+    # Reset the list to the top unconditionally: the arrow template gate is
+    # unreliable (dead match at 16:10), and wheel-up at the top is a no-op.
+    # 3x20 up notches covers the 7x10 down drift a failed run can leave.
     for i in range(3):
-        if now_rgb.button("arrow", conf=0.7):
-            gui.scroll(20)
-            time.sleep(0.1)
-        else:
-            time.sleep(1)
-            break
-    else:
-        time.sleep(1)
+        gui.scroll(20)
+        time.sleep(0.1)
+    time.sleep(1)
 
     for i in range(7):
         coords = [gui.center(box) for box in LocateGray.locate_all(PTH[f"{affinity}_team"], region=REG["teams"], threshold=15, conf=0.85)]
         print(coords)
-        sorted(coords, key=lambda coord: coord[1])
+        coords.sort(key=lambda coord: coord[1])
 
         if len(coords) > idx:
             win_click(coords[idx])
@@ -239,7 +237,7 @@ def select_team():
             gui.scroll(-10)
             time.sleep(0.3)
     else:
-        logging.info("Team selecton failed!")
+        logging.info(f"Team selecton failed! (idx={idx}, {len(coords)} candidates found)")
         return
     logging.info(f"Selected {p.TEAM[0]}")
     time.sleep(1)

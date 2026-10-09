@@ -411,6 +411,7 @@ class Locate(): # if inputing np.ndarray, convert to BGR first!
         #     print(f"image {os.path.splitext(os.path.basename(template))[0]} not found")
         # else: print("image not found")
         if error:
+            _dump_verify_failure(tag=f"locate_fail_{os.path.splitext(os.path.basename(template))[0] if isinstance(template, str) else 'ndarray'}", ver=None)
             raise RuntimeError("Something unexpected happened. This code still needs debugging")
         return False
 

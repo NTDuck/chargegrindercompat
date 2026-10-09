@@ -237,6 +237,7 @@ def select_team():
             gui.scroll(-10)
             time.sleep(0.3)
     else:
+        _dump_verify_failure(tag=f"team_fail_{affinity}", ver=None)
         logging.info(f"Team selecton failed! (idx={idx}, {len(coords)} candidates found)")
         return
     logging.info(f"Selected {p.TEAM[0]}")

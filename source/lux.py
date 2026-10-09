@@ -2,12 +2,12 @@ from source.utils.utils import *
 from source.battle import fight
 
 def is_full(shift):
-    # Bottom-band probe (y=1080..1082 ref): the region passes through
-    # _expand_region (grows downward by `extra`), so its center would drift
-    # off the gauge on 16:10; sampling near the top of the expanded region
-    # stays on the bottom-anchored gauge at any expand height.
-    image = screenshot(region=(530 - shift, 1080, 5, 2))
-    y, x = 1, 2
+    # The region passes through _expand_region (grows downward by `extra` on
+    # 16:10), so its center drifts off the bottom-anchored gauge; sampling
+    # near the BOTTOM of the expanded image tracks 1003+extra at any expand
+    # height and stays 16:9-identical (bottom edge of the original 5px box).
+    image = screenshot(region=(530 - shift, 1003, 5, 5))
+    y, x = image.shape[0] - 2, image.shape[1] // 2
     b, g, r = image[y, x]
     return (
         0 <= r <= 10 and

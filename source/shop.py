@@ -282,8 +282,8 @@ def get_inventory():
                 region = REG["fuse_shelf"]
                 if box:
                     _, y = gui.center(box)
-                    y = max(295, min(897, y))          # 777 + extra: canvas-ref header y, not 1080-clamped
-                    region = (920, y, 790, 777 - y)
+                    y = max(295, min(777 + p.expand_extra_height(), y))   # canvas-ref header y, not 1080-clamped
+                    region = (920, y, 790, 777 + p.expand_extra_height() - y)
 
                 coords, coords_agg, have, uptie = inventory_check(region, 0)
                 if box:
@@ -315,8 +315,8 @@ def get_inventory():
         region = REG["fuse_shelf"]
         if box:
             _, y = gui.center(box)
-            y = max(295, min(777, y))
-            region = (920, y, 790, 777 - y)
+            y = max(295, min(777 + p.expand_extra_height(), y))   # canvas-ref header y, not 1080-clamped
+            region = (920, y, 790, 777 + p.expand_extra_height() - y)
 
         coords, coords_agg, have, uptie = inventory_check(region, 0)
 

@@ -820,7 +820,8 @@ def chain_actions(preset: LocatePreset, actions: list):
             curr.execute(preset, ver=ver)
         except RuntimeError as e:
             desc = getattr(curr, "key", None) or f"click{getattr(curr, 'click', '')}"
-            logging.error(f"chain action[{i}] {desc} (ver={ver!r}) failed: {e}")
+            logged_ver = getattr(curr, "ver", None) or ver
+            logging.error(f"chain action[{i}] {desc} (ver={logged_ver!r}) failed: {e}")
             raise
 
 def handle_fuckup():

@@ -160,7 +160,7 @@ def handle_bonus():
 
 TERMIN = [
     Action("victory", click=(1693, 841), anchor="bottom"),
-    lambda: win_moveTo(1710, 982),
+    lambda: win_moveTo(1710, 982, anchor="bottom"),
     Action("Claim", ver="ClaimInvert"),
     handle_bonus,
     Action("ClaimInvert"),
@@ -211,7 +211,7 @@ def dungeon_end():
 # FAIL RUN
 FAIL = [
     Action("defeat", click=(1693, 841), anchor="bottom"),
-    lambda: win_moveTo(1710, 982),
+    lambda: win_moveTo(1710, 982, anchor="bottom"),
     Action("Claim"),
     Action("GiveUp"),
     Action("ConfirmInvert", ver="loading"),

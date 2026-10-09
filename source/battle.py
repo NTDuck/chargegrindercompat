@@ -55,7 +55,7 @@ def get_lowskill():
     coords_x = []
     for box in boxes:
         x, y = gui.center(box)
-        if y > 870: # lower skill
+        if y > p.canvas_y(870, "bottom"): # lower skill (y is canvas-ref; rows are bottom-anchored)
             x += int(0.061*x - 93)
         else: # upper skill
             x += int(0.206*x - 224)

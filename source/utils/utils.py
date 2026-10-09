@@ -368,9 +368,9 @@ class Locate(): # if inputing np.ndarray, convert to BGR first!
 
                 if click:
                     tsize = (5, 5)
+                    anchor = kwargs.get("anchor", "top")
                     if isinstance(click, tuple) and len(click) == 2:
                         res = click
-                        anchor = kwargs.get("anchor", "top")
                     else:
                         res = gui.center(res)
                         if Locate.tsize["name"] == template:

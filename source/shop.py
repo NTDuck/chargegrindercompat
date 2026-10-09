@@ -282,7 +282,7 @@ def get_inventory():
                 region = REG["fuse_shelf"]
                 if box:
                     _, y = gui.center(box)
-                    y = max(295, min(777, y))
+                    y = max(295, min(897, y))          # 777 + extra: canvas-ref header y, not 1080-clamped
                     region = (920, y, 790, 777 - y)
 
                 coords, coords_agg, have, uptie = inventory_check(region, 0)
@@ -339,7 +339,7 @@ def actual_fuse(tier, coords):
     else: return missing
 
 def fuse_selected():
-    wait_while_condition(lambda: not now.button("Confirm.2"), lambda: win_click(1197, 876, anchor="center") if now.button("fuse") else None, timer=1.5)
+    wait_while_condition(lambda: not now.button("Confirm.2"), lambda: win_click(1197, 876, anchor="bottom") if now.button("fuse") else None, timer=1.5)
     wait_while_condition(lambda: not now.button("Confirm"), lambda: gui.press("space") if now.button("Confirm.2") else None, timer=1.5)
     connection()
     wait_while_condition(

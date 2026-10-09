@@ -244,7 +244,7 @@ def move():
     adjust = 0
     if len(regions) == 0:
         print("Case 2: No directions are visible")
-        if input_with_fallback("space", lambda: win_click(705, 411), enter) or move_fallback():
+        if input_with_fallback("space", lambda: win_click(705, 411, anchor="center"), enter) or move_fallback():
             logging.info("Entering unknown node")
             return True
         return False

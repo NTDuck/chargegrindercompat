@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 from typing import Optional
 
-from .base import BaseCompositorBackend, WaylandBackendError, WindowInfo
+from .base import BaseCompositorBackend, WaylandBackendError, WindowError, WindowInfo
 from .hyprland import HyprlandBackend
 from .kwin import KWinBackend
 from .mango import MangoBackend

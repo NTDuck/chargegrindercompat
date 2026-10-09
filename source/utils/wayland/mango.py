@@ -144,6 +144,8 @@ class MangoBackend(BaseCompositorBackend):
             height = int(item.get("height") or 0)
             if width <= 0 or height <= 0:
                 continue
+            if item.get("is_minimized") or item.get("is_visible") is False:
+                continue
             windows.append(WindowInfo(
                 title=str(item.get("title") or ""),
                 left=int(item.get("x") or 0),

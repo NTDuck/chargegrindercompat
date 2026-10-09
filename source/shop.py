@@ -253,7 +253,9 @@ def close_panel():
         gui.press("esc")
     time.sleep(0.1)
     x, y = win_get_position()
-    if x > 750 and y < 830:
+    # y is canvas-ref (win_get_position inverse-maps the pointer); the stash
+    # target below is bottom-anchored, so the guard boundary moves with it.
+    if x > 750 and y < p.canvas_y(830, "bottom"):
         win_moveTo(x, 841, anchor="bottom")
 
 def concat(dict1, dict2):

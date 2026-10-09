@@ -215,7 +215,9 @@ class Locate(): # if inputing np.ndarray, convert to BGR first!
         if isinstance(image, str):
             image = cv2.imread(image)
         if image is None:
-            image = screenshot(region=_expand_region(region))
+            # screenshot() applies _expand_region itself; pass the region
+            # unexpanded or the search area grows by 2*extra at 16:10.
+            image = screenshot(region=region)
         if not isinstance(image, np.ndarray):
             raise TypeError(f"Locate doesn't support image type '{type(image).__name__}'")
         return image
@@ -487,7 +489,9 @@ class SIFTMatcher:
                 raise FileNotFoundError(f"Image not found: {image}")
             img = img[y_d:y_d+h_d, x_d:x_d+w_d].copy()
         elif image is None:
-            img = screenshot(region=(x, y, w, h))
+            # screenshot() applies _expand_region itself; (x, y, w, h) here is
+            # already expanded, so passing it would expand a second time.
+            img = screenshot(region=region)
         elif isinstance(image, np.ndarray):
             img = image[y_d:y_d+h_d, x_d:x_d+w_d].copy()
         else:

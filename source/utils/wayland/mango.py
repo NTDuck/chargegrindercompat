@@ -144,7 +144,10 @@ class MangoBackend(BaseCompositorBackend):
             height = int(item.get("height") or 0)
             if width <= 0 or height <= 0:
                 continue
-            if item.get("is_minimized") or item.get("is_visible") is False:
+            # Only skip minimized clients: is_visible is False whenever the
+            # window sits on a non-active tag, which would hide the game and
+            # break set_window() while it still renders in a fullscreen stack.
+            if item.get("is_minimized"):
                 continue
             windows.append(WindowInfo(
                 title=str(item.get("title") or ""),

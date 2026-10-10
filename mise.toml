@@ -1,0 +1,22 @@
+# Charge-Grinder compat tasks (mise)
+#
+# Usage:  mise run compat              # venv/bin/python App.py inside the nix dev shell
+#         mise run pip install -r requirements_linux.txt
+#
+# Host `pip install` on NixOS dies with "externally-managed-environment" (the
+# interpreter lives in the immutable /nix/store). All Python work here goes
+# through the uv-seeded 3.11 venv (venv/pyvenv.cfg) *inside* `nix develop`:
+# PyGObject/dbus-python/evdev build from sdist (flake.nix supplies headers,
+# typelibs, dbus) and PySide6's plugins dlopen FHS-named system libs exported
+# via LD_LIBRARY_PATH by the shell.
+[tasks.compat]
+description = "Run Charge-Grinder (venv/bin/python App.py) inside the nix dev shell"
+dir = "{{config_root}}"
+run = "nix develop 'path:{{config_root}}' -c venv/bin/python App.py"
+raw = true
+
+[tasks.pip]
+description = "Run the project venv's pip inside the nix dev shell (never host pip)"
+dir = "{{config_root}}"
+run = "nix develop 'path:{{config_root}}' -c venv/bin/pip"
+raw = true
